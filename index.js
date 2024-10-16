@@ -12,16 +12,18 @@ program
 
 // Обробка помилок Commander.js
 program.exitOverride((err) => {
-  if (err.code === 'commander.missingRequiredOption') {
+  if (err.code === 'commander.missingMandatoryOptionValue' || err.code === 'commander.missingRequiredOption') {
     console.error('Please, specify input file');
     process.exit(1);
-  } else {
-    throw err; // Якщо інша помилка, то вивести її
   }
 });
 
 // Парсимо аргументи
-program.parse(process.argv);
+try {
+  program.parse(process.argv);
+} catch (err) {
+  process.exit(1);
+}
 
 // Отримуємо опції з командера
 const options = program.opts();
