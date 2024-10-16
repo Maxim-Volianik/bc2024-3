@@ -10,17 +10,21 @@ program
   .option('-o, --output <path>', 'Output file (optional)')
   .option('-d, --display', 'Display result in console (optional)');
 
+// Обробка помилок Commander.js
+program.exitOverride((err) => {
+  if (err.code === 'commander.missingRequiredOption') {
+    console.error('Please, specify input file');
+    process.exit(1);
+  } else {
+    throw err; // Якщо інша помилка, то вивести її
+  }
+});
+
 // Парсимо аргументи
 program.parse(process.argv);
 
 // Отримуємо опції з командера
 const options = program.opts();
-
-// Перевіряємо, чи задано обов'язковий параметр input
-if (!options.input) {
-  console.error('Please, specify input file');
-  process.exit(1);
-}
 
 // Перевіряємо, чи існує вхідний файл
 if (!fs.existsSync(options.input)) {
