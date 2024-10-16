@@ -1,54 +1,41 @@
 const fs = require('fs');
 const { Command } = require('commander');
-
-// Створюємо новий командер
 const program = new Command();
 
-// Налаштовуємо прийняття аргументів командного рядка
 program
-  .requiredOption('-i, --input <path>', 'Input file (required)')
-  .option('-o, --output <path>', 'Output file (optional)')
-  .option('-d, --display', 'Display result in console (optional)');
+  .requiredOption('-i, --input <path>', 'Input file path') // обов'язковий параметр
+  .option('-o, --output <path>', 'Output file path') // необов'язковий параметр
+  .option('-d, --display', 'Display result in console') // необов'язковий параметр
+  .parse(process.argv);
 
-// Парсимо аргументи
-program.parse(process.argv);
-
-// Отримуємо опції з командера
 const options = program.opts();
 
-// Перевіряємо, чи задано обов'язковий параметр input
+// Перевірка наявності обов'язкового параметру -i (input)
 if (!options.input) {
   console.error('Please, specify input file');
   process.exit(1);
 }
 
-// Перевіряємо, чи існує вхідний файл
-if (!fs.existsSync(options.input)) {
-  console.error('Cannot find input file');
-  process.exit(1);
-}
+// Читання вхідного файлу
+fs.readFile(options.input, 'utf8', (err, data) => {
+  if (err) {
+    console.error('Cannot find input file');
+    process.exit(1);
+  }
 
-// Читаємо вхідний файл
-const data = JSON.parse(fs.readFileSync(options.input, 'utf8'));
+  // Якщо задано параметр -display, виводимо результат у консоль
+  if (options.display) {
+    console.log('File content:', data);
+  }
 
-// Перевіряємо, чи задані необов'язкові параметри output та display
-if (!options.output && !options.display) {
-  // Нічого не виводимо
-  process.exit(0);
-}
-
-// Функція для виводу даних
-const result = JSON.stringify(data, null, 2);
-
-if (options.display) {
-  console.log(result);
-}
-
-if (options.output) {
-  fs.writeFileSync(options.output, result, 'utf8');
-  console.log(`Result saved to ${options.output}`);
-}
-
-if (options.output && options.display) {
-  console.log('Result saved and displayed.');
-}
+  // Якщо задано параметр -output, записуємо результат у файл
+  if (options.output) {
+    fs.writeFile(options.output, data, 'utf8', (err) => {
+      if (err) {
+        console.error('Error writing to output file');
+        process.exit(1);
+      }
+      console.log(`Data has been written to ${options.output}`);
+    });
+  }
+});
