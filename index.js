@@ -47,7 +47,11 @@ if (!options.output && !options.display) {
 const filteredData = data.filter(item => item.parent === "BS3_BanksLiab");
 
 // Форматуємо результати
-const results = filteredData.map(item => `${item.indicatorName || item.name}: ${item.value}`).join('\n'); // Використовуйте правильний ключ
+const results = filteredData.map(item => {
+  const name = item.txten; // Використовуємо ключ txten для назви показника
+  const value = item.value;
+  return `${name}: ${value}`;
+}).join('\n'); // Використовуємо правильний ключ
 
 // Виводимо результати в консоль, якщо вказано параметр --display
 if (options.display) {
