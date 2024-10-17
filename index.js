@@ -47,7 +47,7 @@ if (!options.output && !options.display) {
 const filteredData = data.filter(item => item.parent === "BS3_BanksLiab");
 
 // Форматуємо результати
-const results = filteredData.map(item => `${item.name}: ${item.value}`).join('\n');
+const results = filteredData.map(item => `${item.indicatorName || item.name}: ${item.value}`).join('\n'); // Використовуйте правильний ключ
 
 // Виводимо результати в консоль, якщо вказано параметр --display
 if (options.display) {
@@ -64,4 +64,3 @@ if (options.output) {
 if (options.output && options.display) {
   console.log('Result saved and displayed.');
 }
-
