@@ -43,18 +43,25 @@ if (!options.output && !options.display) {
   process.exit(0);
 }
 
-// Функція для виводу даних
-const result = JSON.stringify(data, null, 2);
+// Фільтруємо дані, де parent = "BS3_BanksLiab"
+const filteredData = data.filter(item => item.parent === "BS3_BanksLiab");
 
+// Форматуємо результати
+const results = filteredData.map(item => `${item.name}: ${item.value}`).join('\n');
+
+// Виводимо результати в консоль, якщо вказано параметр --display
 if (options.display) {
-  console.log(result);
+  console.log(results);
 }
 
+// Записуємо результати у файл, якщо вказано параметр --output
 if (options.output) {
-  fs.writeFileSync(options.output, result, 'utf8');
+  fs.writeFileSync(options.output, results, 'utf8');
   console.log(`Result saved to ${options.output}`);
 }
 
+// Якщо вказано обидва параметри --output і --display
 if (options.output && options.display) {
   console.log('Result saved and displayed.');
 }
+
