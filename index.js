@@ -17,7 +17,12 @@ try {
 const options = program.opts();
 
 if (!options.input) {
-  console.log('Cannot find input file');
+  console.log('Де input?');
+  process.exit(1);
+}
+
+if (!fs.existsSync(options.input)) {
+  console.log(`Input file "${options.input}" does not exist.`);
   process.exit(1);
 }
 
