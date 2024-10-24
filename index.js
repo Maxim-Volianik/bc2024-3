@@ -4,16 +4,9 @@ const { Command } = require('commander');
 const program = new Command();
 
 program
-  .requiredOption('-i, --input <path>', 'Input file (required)')
+  .option('-i, --input <path>', 'Input file (required)')
   .option('-o, --output <path>', 'Output file (optional)')
   .option('-d, --display', 'Display result in console (optional)');
-
-program.exitOverride((err) => {
-  if (err.code === 'commander.missingMandatoryOptionValue' || err.code === 'commander.missingRequiredOption') {
-    console.error('Please, specify input file');
-    process.exit(1);
-  }
-});
 
 try {
   program.parse(process.argv);
@@ -23,8 +16,8 @@ try {
 
 const options = program.opts();
 
-if (!fs.existsSync(options.input)) {
-  console.error('Cannot find input file');
+if (!options.input) {
+  console.log('Cannot find input file');
   process.exit(1);
 }
 
